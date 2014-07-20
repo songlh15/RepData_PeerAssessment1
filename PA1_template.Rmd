@@ -3,7 +3,7 @@ This is a Coursera reproducible course project. The task is to explore the stati
 
 ## Loading and preprocessing the data
 
-Assume the data is unzipped and located in the current working directory. The following codes are used to load.
+Assume the data is unzipped and located in the current working directory. The following codes are used to load into R.
 
 
 ```{r data loading}
@@ -23,7 +23,7 @@ The folowing steps is to process the data, main task is to change interval to ti
 timeday <- strptime(sprintf("%04d", as.numeric(as.character(datains$interval))), "%H%M")
 timedayf <- data.frame(timeday)
 #remove added date part 
-timedayf <- gsub('2014-07-19','',timedayf$timeday)
+timedayf <- gsub('2014-07-20','',timedayf$timeday)
 #add in time to data frame
 datetime<- cbind(datains,timedayf)
 

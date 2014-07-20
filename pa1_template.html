@@ -194,7 +194,7 @@ hr {
 
 <h2>Loading and preprocessing the data</h2>
 
-<p>Assume the data is unzipped and located in the current working directory. The following codes are used to load.</p>
+<p>Assume the data is unzipped and located in the current working directory. The following codes are used to load into R.</p>
 
 <pre><code class="r"># check work directory
 if(!getwd()==&quot;C:/Users/song/Dropbox/Coursera/reproduce/RepData_PeerAssessment1&quot;)
@@ -210,7 +210,7 @@ if(!getwd()==&quot;C:/Users/song/Dropbox/Coursera/reproduce/RepData_PeerAssessme
 timeday &lt;- strptime(sprintf(&quot;%04d&quot;, as.numeric(as.character(datains$interval))), &quot;%H%M&quot;)
 timedayf &lt;- data.frame(timeday)
 #remove added date part 
-timedayf &lt;- gsub(&#39;2014-07-19&#39;,&#39;&#39;,timedayf$timeday)
+timedayf &lt;- gsub(&#39;2014-07-20&#39;,&#39;&#39;,timedayf$timeday)
 #add in time to data frame
 datetime&lt;- cbind(datains,timedayf)
 

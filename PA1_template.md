@@ -6,7 +6,8 @@ This is a Coursera reproducible course project. The task is to explore the stati
 Assume the data is unzipped and located in the current working directory. The following codes are used to load.
 
 
-```{r data loading}
+
+```r
 # check work directory
 if(!getwd()=="C:/Users/song/Dropbox/Coursera/reproduce/RepData_PeerAssessment1")
   setwd("C:/Users/song/Dropbox/Coursera/reproduce/RepData_PeerAssessment1")
@@ -18,7 +19,8 @@ if(!getwd()=="C:/Users/song/Dropbox/Coursera/reproduce/RepData_PeerAssessment1")
 The folowing steps is to process the data, main task is to change interval to time format and combine with date to make a date format variable. 
 
 
-```{r processing data}
+
+```r
 #convert interval to time format
 timeday <- strptime(sprintf("%04d", as.numeric(as.character(datains$interval))), "%H%M")
 timedayf <- data.frame(timeday)
@@ -43,7 +45,8 @@ The date frame steptime is the processed dataset and is ready for analysis.
 In this task,the total number of steps, mean and median of total numbers taken each is calculated after ignoring the missing values.  A histogram is also plotted. 
 
 
-```{r task 1}
+
+```r
 #1, remove NA for steps
 stepdatetime <- steptime[!is.na(steptime$steps),]
 stepdatetime$steps <- as.numeric(stepdatetime$steps)
@@ -56,14 +59,27 @@ library(ggplot2)
 ggplot(sum_in, aes(x=steps)) + geom_histogram(binwidth=400)
 ```
 
+![plot of chunk task 1](figure/task 1.png) 
+
 Mean and median of steps taken
 
-```{r statistics}
+
+```r
 #mean of steps taken
 mean(sum_in$steps)
+```
 
+```
+## [1] 10766
+```
+
+```r
 #median of steps taken
 median(sum_in$steps)
+```
+
+```
+## [1] 10765
 ```
 
 
@@ -74,7 +90,8 @@ This task requires calculate the average steps of the 5-minute interval across a
 The results can be seen here:
 
 
-```{r task 2}
+
+```r
 #get mean steps for each interval
 mean_int <- aggregate(steps~interval,stepdatetime,mean)
 
@@ -82,12 +99,20 @@ mean_int <- aggregate(steps~interval,stepdatetime,mean)
 plot(mean_int$interval,mean_int$steps,type='l',main='Average steps taken',xlab='5-minute interval',ylab='Average steps')
 ```
 
-```{r max}
+![plot of chunk task 2](figure/task 2.png) 
+
+
+```r
 #sort steps in descending order to get the max steps interval
 interval_max <- mean_int[with(mean_int, order(-steps)),]
 
 #output the first row to the interval which max average steps were taken
 head(interval_max ,1)
+```
+
+```
+##     interval steps
+## 104      835 206.2
 ```
 
 As result shown above, the max steps(206 steps) was taken on interval 835.
@@ -99,14 +124,20 @@ This task is to figure out the number of missing values and impute them using me
 First, the total number of missing values can be seen as:
 
 
-```{r na}
+
+```r
 nastep <-steptime[is.na(steptime$steps),]
 nrow(nastep)
 ```
 
+```
+## [1] 2304
+```
+
 Second, impute missing values using calculated mean for that 5-minute interval and create a new dataset,imputedata, with missing data filled in.
 
-```{r imputing}
+
+```r
 #impute NA by merge in mean steps of that day
 impute <- merge(steptime[,c('steps','date','interval','daytime')],mean_int,by.x='interval',by.y='interval',all=T)
 
@@ -121,19 +152,40 @@ imputedata <- impute[with(impute, order(date,interval)),c('steps','date','interv
 
 The following shows the data contenst for first 5 rows before and after imputation.
 
-```{r table1}
+
+```r
 # first 5 rows of data before imputation.
 head(steptime[c('steps','date','interval','daytime')],5,row.names=F)
 ```
 
-```{r table2}
+```
+##   steps       date interval             daytime
+## 1    NA 2012-10-01        0 2012-10-01 00:00:00
+## 2    NA 2012-10-01        5 2012-10-01 00:05:00
+## 3    NA 2012-10-01       10 2012-10-01 00:10:00
+## 4    NA 2012-10-01       15 2012-10-01 00:15:00
+## 5    NA 2012-10-01       20 2012-10-01 00:20:00
+```
+
+
+```r
 # first 5 rows of data after imputation.
 head(imputedata[c('steps','date','interval','daytime')],5,row.names=F)
 ```
 
+```
+##       steps       date interval             daytime
+## 1   1.71698 2012-10-01        0 2012-10-01 00:00:00
+## 63  0.33962 2012-10-01        5 2012-10-01 00:05:00
+## 128 0.13208 2012-10-01       10 2012-10-01 00:10:00
+## 205 0.15094 2012-10-01       15 2012-10-01 00:15:00
+## 264 0.07547 2012-10-01       20 2012-10-01 00:20:00
+```
+
 The total steps caclulation and histogram using filled in values can be seen as:
  
-```{r imputation statistics}
+
+```r
 #get total steps per day using imputed data
 sumimpute <- aggregate(steps~date,imputedata,sum)
 
@@ -142,13 +194,26 @@ library(ggplot2)
 ggplot(sumimpute, aes(x=steps)) + geom_histogram(binwidth=400)
 ```
 
+![plot of chunk imputation statistics](figure/imputation statistics.png) 
+
 Here are the mean and median steps taken summary after missing values imputation:
 
-```{r statistics after imputation}
+
+```r
 #output mean and median of steps taken after imputation
 mean(sumimpute$steps)
+```
 
+```
+## [1] 10766
+```
+
+```r
 median(sumimpute$steps)
+```
+
+```
+## [1] 10766
 ```
 
 As you can see, that the mean of steps taken doesn't change while median steps changes a lit bit after filling in. Using mean steps of each interval to impute missing values doesn't seem to affect the estimates of the total daily number of steps. However, other imputation strategy might have impact on the estimation.
@@ -158,7 +223,8 @@ As you can see, that the mean of steps taken doesn't change while median steps c
 In this task, a new variable weekday is created with "weekday" and "weekend" two levels. A panel plot is created based on filled in datasets to show the difference in activity patterns between weekday and weekend. 
 
 
-```{r task 5}
+
+```r
 #check weekend and weekday
 week <- data.frame(weekname=weekdays(imputedata$daytime))
 weekd <- cbind(steptime,week)
@@ -172,14 +238,25 @@ stepweekday<- cbind(weekd,stepweek)
 
 Here is the data with newly created factor for weekday and weekend.
 
-```{r table 3}
+
+```r
 #show partial data
 head(stepweekday[1:5,c('steps','daytime','weekdaylevel')],row.names=F)
 ```
 
+```
+##   steps             daytime weekdaylevel
+## 1    NA 2012-10-01 00:00:00      weekday
+## 2    NA 2012-10-01 00:05:00      weekday
+## 3    NA 2012-10-01 00:10:00      weekday
+## 4    NA 2012-10-01 00:15:00      weekday
+## 5    NA 2012-10-01 00:20:00      weekday
+```
+
 The statistics and plots using weekdaylevel as factor are: 
 
-```{r task 4}
+
+```r
 #calculate mean steps taken by interval during weekday
 weekave <- aggregate(steps~interval,stepweekday[stepweekday$weekdaylevel=='weekday',],mean)
 #calculate mean steps taken by interval during weekend
@@ -193,6 +270,8 @@ plot(weekave$interval,weekave$steps,type='l',xlab='Weekday',
 
 plot(weekendave$interval,weekendave$steps,type='l',xlab='Weekend',ylab='Average steps',ylim=range(0:220))
 ```
+
+![plot of chunk task 4](figure/task 4.png) 
 
 As shown above, there are difference activity pattern during weekday and weekend.
 * Steps taken starts earlier and increase higher on weekday morning than on weekend
